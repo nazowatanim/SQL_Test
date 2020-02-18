@@ -5,7 +5,7 @@ FROM #Employee e1
 WHERE 3-1 = (SELECT COUNT(DISTINCT salary) FROM #Employee e2
 WHERE e2.salary > e1.salary)
 
-###
+####################
 CREATE TABLE Orders (
     OrderID int NOT NULL,
     OrderNumber int NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE Orders (
     PRIMARY KEY (OrderID),
     FOREIGN KEY (PersonID) REFERENCES Persons(ID)
 );
-
+######################
 ALTER TABLE Orders
 ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
 CREATE TABLE IF NOT EXISTS countries ( 
@@ -22,14 +22,14 @@ COUNTRY_NAME varchar(40)
 CHECK(COUNTRY_NAME IN('Italy','India','China')) ,
 REGION_ID decimal(10,0)
 );
-#only unique key at time of insertion
+#######only unique key at time of insertion
 CREATE TABLE IF NOT EXISTS countries ( 
 COUNTRY_ID varchar(2) NOT NULL,
 COUNTRY_NAME varchar(40) NOT NULL,
 REGION_ID decimal(10,0) NOT NULL,
 UNIQUE(COUNTRY_ID)
 );
-#making two columns unique
+############making two columns unique
 CREATE TABLE IF NOT EXISTS countries (
 COUNTRY_ID varchar(2) NOT NULL UNIQUE DEFAULT '',
 COUNTRY_NAME varchar(40) DEFAULT NULL,
@@ -51,7 +51,7 @@ DEPARTMENT_ID decimal(4,0) DEFAULT NULL,
 FOREIGN KEY(DEPARTMENT_ID,MANAGER_ID) 
 REFERENCES  departments(DEPARTMENT_ID,MANAGER_ID)
 )
-####on delete action
+###########on delete action
 CREATE TABLE IF NOT EXISTS employees ( 
 EMPLOYEE_ID decimal(6,0) NOT NULL PRIMARY KEY, 
 FIRST_NAME varchar(20) DEFAULT NULL, 
@@ -63,7 +63,7 @@ REFERENCES  jobs(JOB_ID)
 ON DELETE SET NULL 
 ON UPDATE SET NULL
 )ENGINE=InnoDB;
-####on delete no action
+#############on delete no action
 CREATE TABLE IF NOT EXISTS employees ( 
 EMPLOYEE_ID decimal(6,0) NOT NULL PRIMARY KEY, 
 FIRST_NAME varchar(20) DEFAULT NULL, 
@@ -75,3 +75,19 @@ REFERENCES  jobs(JOB_ID)
 ON DELETE SET NULL 
 ON UPDATE SET NULL
 )ENGINE=InnoDB;
+##############################
+explain select * from employees where salary=62871;
+create index idx_sal on employees(salary)
+##############################nth highest salary
+
+SELECT name, salary 
+FROM employee_salary e1
+WHERE 2-1 = (SELECT COUNT(DISTINCT salary) FROM employee_salary e2
+WHERE e2.salary > e1.salary)
+##############################nth lowest salary
+SELECT TOP 1 salary
+FROM (
+SELECT DISTINCT TOP n salary
+FROM employee
+ORDER BY salary ASC) a
+ORDER BY salary
